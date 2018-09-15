@@ -13,37 +13,46 @@ public:
         if (head == NULL || head->next == NULL) {
             return true;
         }
-
-        int n = 0;
-        auto cur = head;
-        while(cur != NULL) {
-            ++n;
-            cur = cur->next;
+  
+        auto slow = head,fast = head;
+        while(fast != NULL && fast->next != NULL) {
+            fast = fast->next->next;
+            slow = slow->next;
         }
-
-        int m = n & 1 ? n / 2 + 1 : n / 2;
-        int i = 1;
-        cur = head;
-        ListNode *prev = NULL;
-        while(i++ <= m) {
-            ListNode *tmp = cur->next;
-            cur->next = prev;
-            prev = cur;
-            cur = tmp; 
+        // odd case
+        if (fast != NULL) {
+            slow = slow->next;
         }
-
-        auto lst1 = n & 1 ? prev->next : prev;
-        auto lst2 = cur;
-        bool res = true;
+        
+        ListNode *lst2 = reverse(slow);
+        ListNode *lst1 = head;
+        bool isPalindrome = true;
         while (lst2 != NULL) {
             if (lst1->val != lst2->val) {
-                res = false;
+                isPalindrome = false;
                 break;
-            } 
+            }
             lst1 = lst1->next;
             lst2 = lst2->next;
         }
-
-        return res;
+        return isPalindrome;
     }
-};
+
+private:
+    ListNode *reverse(ListNode *head) {
+        if (head == NULL || head->next == NULL) {
+            return head;
+        }
+
+        ListNode *prev = NULL;
+        ListNode *cur = head;
+        while(cur != NULL) {
+            ListNode *tmp = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = tmp;
+        }
+
+        return prev;
+    }
+}; 
